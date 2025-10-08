@@ -27,11 +27,6 @@ export class MercadoController {
     return this.mercadosArmazenados.mercados;
   }
 
-  @Get(':id')
-  async buscarPorId(@Param('id') id: string): Promise<MercadoEntity> {
-    return this.mercadosArmazenados.buscarMercado(id);
-  }
-
   @Put(':id')
   async atualizar(
     @Param('id') id: string,
