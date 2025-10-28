@@ -55,3 +55,6 @@ export class ProdutosDatabase {
     this.mercados = this.mercados.filter(m => m.id !== id);
   }
 }
+
+//teste comit
+
