@@ -19,11 +19,11 @@ export class ProdutosDatabase {
       new ProdutoEntity(uuid(), 'Açúcar', 'União', '1kg', '3.49'),
     ];
 
-    this.mercados = [
-      new MercadoEntity('Supermercado A', 'Rua das Flores, 100'),
-      new MercadoEntity('Supermercado B', 'Av. Central, 250'),
-      new MercadoEntity('Supermercado C', 'Rua Nova, 42'),
-    ];
+    // this.mercados = [
+    //   new MercadoEntity('Supermercado A', 'Rua das Flores, 100'),
+    //   new MercadoEntity('Supermercado B', 'Av. Central, 250'),
+    //   new MercadoEntity('Supermercado C', 'Rua Nova, 42'),
+    // ];
   }
 
   static get instance(): ProdutosDatabase {
