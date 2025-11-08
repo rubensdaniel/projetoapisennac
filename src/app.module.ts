@@ -3,7 +3,7 @@ import { UsuarioModule } from './usuario/usuario.module';
 import { ProdutoModule } from './produto/produto.module';
 import { MercadoModule } from './mercado/mercado.module';
 import { UsuarioController } from './usuario/usuario.controller';
-import { UsuariosArmazenados } from './usuario/usuario.dm';
+import { UsuariosArmazenados } from './usuario/usuario.service';
 
 
 
