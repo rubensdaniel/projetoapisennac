@@ -262,6 +262,68 @@ async getPriceComparison(nome: string, peso?: string): Promise<PriceComparisonDt
     return result;
   }
 
+//=============================
+
+async getMostRepeatedProducts(
+  limit = 10,
+  peso?: string,
+  marca?: string,
+): Promise<
+  { nomeOrdenado: string; exemplo: string; marca: string; count: number }[]
+> {
+  const where: any = {};
+  if (peso) where.peso = peso;
+  if (marca) where.marca = marca;
+
+  // Pega todos os produtos filtrados
+  const produtos = await this.produtoRepository.find({
+    select: ['nomeOrdenado', 'nomeOriginal', 'marca', 'peso', 'mercado', 'coletadoEm'],
+    where,
+    order: { coletadoEm: 'DESC' }, // garante que o mais recente venha primeiro
+  });
+
+  // Mantém apenas o registro mais recente de cada mercado por produto
+  const latestByMarket = new Map<string, ProdutoEntity>();
+  for (const p of produtos) {
+    // chave = mercado + nomeOrdenado
+    const key = `${p.mercado}-${p.nomeOrdenado}`;
+    if (!latestByMarket.has(key)) {
+      latestByMarket.set(key, p);
+    }
+  }
+
+  // Contagem de ocorrências por nomeOrdenado
+  const counts = new Map<string, { exemplo: string; marca: string; count: number }>();
+  for (const p of latestByMarket.values()) {
+    const key = p.nomeOrdenado;
+    if (!counts.has(key)) {
+      counts.set(key, { exemplo: p.nomeOriginal, marca: p.marca, count: 1 });
+    } else {
+      counts.get(key)!.count += 1;
+    }
+  }
+
+  // Ordena do mais repetido para o menos e aplica limite
+  const sorted = Array.from(counts.entries())
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, limit)
+    .map(([nomeOrdenado, data]) => ({
+      nomeOrdenado,
+      exemplo: data.exemplo,
+      marca: data.marca,
+      count: data.count,
+    }));
+
+  return sorted;
+}
+
+
+
+//================================
+
+
+
+
   async update(id: number, dados: CriarProdutoDto): Promise<PriceEntryDto> {
     const produto = await this.produtoRepository.findOneBy({ id });
     if (!produto) throw new Error('Produto não encontrado');

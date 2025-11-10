@@ -55,6 +55,25 @@ async findByBrand(@Param('marca') marca: string): Promise<PriceEntryDto[]> {
   //   return this.produtoService.getPriceComparison(nome);
   // }
 
+//==============================================================
+
+// Endpoint para produtos mais repetidos, com filtro por peso e marca
+@Get('mais-repetidos')
+async getMostRepeatedProducts(
+  @Query('limit') limit?: string,  // opcional, default 10
+  @Query('peso') peso?: string,    // opcional
+  @Query('marca') marca?: string,  // opcional
+) {
+  const parsedLimit = limit ? parseInt(limit, 10) : 10;
+  return this.produtoService.getMostRepeatedProducts(parsedLimit, peso, marca);
+}
+
+
+
+
+//==============================================================
+
+
 // Comparar preços de um produto em diferentes mercados
 @Get('price-comparison/:nome')
 async getPriceComparison(
