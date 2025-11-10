@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common';
 import { ProdutoService } from './produto.services';
 import { CriarProdutoDto } from './dto/criarProduto.dto';
 import { PriceEntryDto, PriceComparisonDto, PriceTrendDto, PriceVariationDto } from './dto/price-entry.dto';
@@ -45,15 +45,26 @@ async findByBrand(@Param('marca') marca: string): Promise<PriceEntryDto[]> {
 
   // Obter produtos únicos
   @Get('unique-products')
-  async getUniqueProducts(): Promise<{ nomeLimpo: string; nomeOriginal: string; marca: string }[]> {
+  async getUniqueProducts(): Promise<{ nomeOrdenado: string; nomeOriginal: string; marca: string; peso: string }[]> {
     return this.produtoService.getUniqueProducts();
   }
 
-  // Comparar preços de um produto em diferentes mercados
-  @Get('price-comparison/:nome')
-  async getPriceComparison(@Param('nome') nome: string): Promise<PriceComparisonDto[]> {
-    return this.produtoService.getPriceComparison(nome);
-  }
+  // // Comparar preços de um produto em diferentes mercados
+  // @Get('price-comparison/:nome')
+  // async getPriceComparison(@Param('nome') nome: string): Promise<PriceComparisonDto[]> {
+  //   return this.produtoService.getPriceComparison(nome);
+  // }
+
+// Comparar preços de um produto em diferentes mercados
+@Get('price-comparison/:nome')
+async getPriceComparison(
+  @Param('nome') nome: string,
+  @Query('peso') peso?: string, // <-- adiciona peso como query param opcional
+): Promise<PriceComparisonDto[]> {
+  return this.produtoService.getPriceComparison(nome, peso);
+}
+//===========================================================
+
 
   // Obter tendência de preço de um produto
   @Get('price-trend/:nome')

@@ -70,55 +70,117 @@ async findByBrand(marca: string): Promise<PriceEntryDto[]> {
     return produtos.map((p) => this.mapToDto(p));
   }
 
-  async getUniqueProducts(): Promise<
-    { nomeLimpo: string; nomeOriginal: string; marca: string }[]
-  > {
-    const produtos = await this.produtoRepository.find({
-      select: ['nomeLimpo', 'nomeOriginal', 'marca'],
-    });
+  // async getUniqueProducts(): Promise<
+  //   { nomeLimpo: string; nomeOriginal: string; marca: string }[]
+  // > {
+  //   const produtos = await this.produtoRepository.find({
+  //     select: ['nomeLimpo', 'nomeOriginal', 'marca'],
+  //   });
 
-    const unique = new Map<
-      string,
-      { nomeLimpo: string; nomeOriginal: string; marca: string }
-    >();
+  //   const unique = new Map<
+  //     string,
+  //     { nomeLimpo: string; nomeOriginal: string; marca: string }
+  //   >();
 
-    for (const p of produtos) {
-      if (!unique.has(p.nomeLimpo)) {
-        unique.set(p.nomeLimpo, {
-          nomeLimpo: p.nomeLimpo,
-          nomeOriginal: p.nomeOriginal,
-          marca: p.marca,
-        });
-      }
+  //   for (const p of produtos) {
+  //     if (!unique.has(p.nomeLimpo)) {
+  //       unique.set(p.nomeLimpo, {
+  //         nomeLimpo: p.nomeLimpo,
+  //         nomeOriginal: p.nomeOriginal,
+  //         marca: p.marca,
+  //       });
+  //     }
+  //   }
+
+  //   return Array.from(unique.values());
+  // }
+
+async getUniqueProducts(): Promise<
+  { nomeOrdenado: string; nomeOriginal: string; marca: string; peso: string }[]
+> {
+  const produtos = await this.produtoRepository.find({
+    select: ['nomeOrdenado', 'nomeOriginal', 'marca', 'peso'],
+  });
+
+  const unique = new Map<
+    string,
+    { nomeOrdenado: string; nomeOriginal: string; marca: string; peso: string }
+  >();
+
+  for (const p of produtos) {
+    if (!unique.has(p.nomeOrdenado)) {
+      unique.set(p.nomeOrdenado, {
+        nomeOrdenado: p.nomeOrdenado,
+        nomeOriginal: p.nomeOriginal,
+        marca: p.marca,
+        peso: p.peso,
+      });
     }
-
-    return Array.from(unique.values());
   }
 
-  async getPriceComparison(nome: string): Promise<PriceComparisonDto[]> {
-    const nomeLimpo = this.limparNome(nome);
-    const produtos = await this.produtoRepository.find({
-      where: { nomeLimpo },
-      order: { coletadoEm: 'DESC' },
-    });
+  return Array.from(unique.values());
+}
+//===========================================================
 
-    const latestByMarket = new Map<string, ProdutoEntity>();
-    for (const p of produtos) {
-      if (
-        !latestByMarket.has(p.mercado) ||
-        new Date(p.coletadoEm) >
-          new Date(latestByMarket.get(p.mercado)!.coletadoEm)
-      ) {
-        latestByMarket.set(p.mercado, p);
-      }
+
+  // async getPriceComparison(nome: string): Promise<PriceComparisonDto[]> {
+  //   const nomeLimpo = this.limparNome(nome);
+  //   const produtos = await this.produtoRepository.find({
+  //     where: { nomeLimpo },
+  //     order: { coletadoEm: 'DESC' },
+  //   });
+
+  //   const latestByMarket = new Map<string, ProdutoEntity>();
+  //   for (const p of produtos) {
+  //     if (
+  //       !latestByMarket.has(p.mercado) ||
+  //       new Date(p.coletadoEm) >
+  //         new Date(latestByMarket.get(p.mercado)!.coletadoEm)
+  //     ) {
+  //       latestByMarket.set(p.mercado, p);
+  //     }
+  //   }
+
+  //   return Array.from(latestByMarket.values()).map((p) => ({
+  //     mercado: p.mercado,
+  //     preco: p.preco,
+  //     coletadoEm: p.coletadoEm,
+  //   }));
+  // }
+
+async getPriceComparison(nome: string, peso?: string): Promise<PriceComparisonDto[]> {
+  const nomeOrdenado = this.limparNome(nome);
+  const where: any = { nomeOrdenado };
+  if (peso) where.peso = peso; // adiciona filtro opcional
+
+  const produtos = await this.produtoRepository.find({
+    where,
+    order: { coletadoEm: 'DESC' },
+  });
+
+  const latestByMarket = new Map<string, ProdutoEntity>();
+  for (const p of produtos) {
+    if (
+      !latestByMarket.has(p.mercado) ||
+      new Date(p.coletadoEm) > new Date(latestByMarket.get(p.mercado)!.coletadoEm)
+    ) {
+      latestByMarket.set(p.mercado, p);
     }
-
-    return Array.from(latestByMarket.values()).map((p) => ({
-      mercado: p.mercado,
-      preco: p.preco,
-      coletadoEm: p.coletadoEm,
-    }));
   }
+
+  return Array.from(latestByMarket.values()).map((p) => ({
+    mercado: p.mercado,
+    preco: p.preco,
+    peso: p.peso,
+    url: p.url,
+    imagem: p.imagem,
+    coletadoEm: p.coletadoEm,
+  }));
+}
+
+//------------------------------------------
+
+
 
   async getPriceTrend(nome: string): Promise<PriceTrendDto> {
     const nomeLimpo = this.limparNome(nome);
