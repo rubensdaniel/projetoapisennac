@@ -173,6 +173,7 @@ async getPriceComparison(nome: string, peso?: string): Promise<PriceComparisonDt
     preco: p.preco,
     peso: p.peso,
     url: p.url,
+    nomeLimpo: p.nomeLimpo,
     imagem: p.imagem,
     coletadoEm: p.coletadoEm,
   }));
