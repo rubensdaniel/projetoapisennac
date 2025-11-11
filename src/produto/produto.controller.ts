@@ -45,7 +45,7 @@ async findByBrand(@Param('marca') marca: string): Promise<PriceEntryDto[]> {
 
   // Obter produtos únicos
   @Get('unique-products')
-  async getUniqueProducts(): Promise<{ nomeOrdenado: string; nomeOriginal: string; marca: string; peso: string }[]> {
+  async getUniqueProducts(): Promise<{ nomeOrdenado: string; nomeLimpo: string; marca: string; peso: string }[]> {
     return this.produtoService.getUniqueProducts();
   }
 

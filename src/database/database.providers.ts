@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
 
-dotenv.config(); // Carrega as variáveis do .env
+dotenv.config();
 
 export const databaseProviders = [
   {
@@ -37,12 +37,12 @@ export const databaseProviders = [
       });
 
       try {
-        console.log('🟡 Tentando conectar ao banco de dados...');
+        console.log('Tentando conectar ao banco de dados...');
         await dataSource.initialize();
-        console.log('✅ Conexão com banco de dados estabelecida!');
+        console.log('Conexão com banco de dados estabelecida!');
         return dataSource;
       } catch (error) {
-        console.error('❌ Erro ao conectar ao banco de dados:', error);
+        console.error('Erro ao conectar ao banco de dados:', error);
         throw error;
       }
     },

@@ -96,22 +96,25 @@ async findByBrand(marca: string): Promise<PriceEntryDto[]> {
   // }
 
 async getUniqueProducts(): Promise<
-  { nomeOrdenado: string; nomeOriginal: string; marca: string; peso: string }[]
+  { nomeOrdenado: string; nomeLimpo: string; marca: string; peso: string }[]
 > {
   const produtos = await this.produtoRepository.find({
-    select: ['nomeOrdenado', 'nomeOriginal', 'marca', 'peso'],
+    select: ['nomeOrdenado', 
+             'nomeLimpo',
+             'marca', 
+             'peso'],
   });
 
   const unique = new Map<
     string,
-    { nomeOrdenado: string; nomeOriginal: string; marca: string; peso: string }
+    { nomeOrdenado: string; nomeLimpo: string; marca: string; peso: string }
   >();
 
   for (const p of produtos) {
     if (!unique.has(p.nomeOrdenado)) {
       unique.set(p.nomeOrdenado, {
         nomeOrdenado: p.nomeOrdenado,
-        nomeOriginal: p.nomeOriginal,
+        nomeLimpo: p.nomeLimpo,
         marca: p.marca,
         peso: p.peso,
       });
@@ -120,33 +123,6 @@ async getUniqueProducts(): Promise<
 
   return Array.from(unique.values());
 }
-//===========================================================
-
-
-  // async getPriceComparison(nome: string): Promise<PriceComparisonDto[]> {
-  //   const nomeLimpo = this.limparNome(nome);
-  //   const produtos = await this.produtoRepository.find({
-  //     where: { nomeLimpo },
-  //     order: { coletadoEm: 'DESC' },
-  //   });
-
-  //   const latestByMarket = new Map<string, ProdutoEntity>();
-  //   for (const p of produtos) {
-  //     if (
-  //       !latestByMarket.has(p.mercado) ||
-  //       new Date(p.coletadoEm) >
-  //         new Date(latestByMarket.get(p.mercado)!.coletadoEm)
-  //     ) {
-  //       latestByMarket.set(p.mercado, p);
-  //     }
-  //   }
-
-  //   return Array.from(latestByMarket.values()).map((p) => ({
-  //     mercado: p.mercado,
-  //     preco: p.preco,
-  //     coletadoEm: p.coletadoEm,
-  //   }));
-  // }
 
 async getPriceComparison(nome: string, peso?: string): Promise<PriceComparisonDto[]> {
   const nomeOrdenado = this.limparNome(nome);
@@ -178,9 +154,6 @@ async getPriceComparison(nome: string, peso?: string): Promise<PriceComparisonDt
     coletadoEm: p.coletadoEm,
   }));
 }
-
-//------------------------------------------
-
 
 
   async getPriceTrend(nome: string): Promise<PriceTrendDto> {
@@ -263,8 +236,6 @@ async getPriceComparison(nome: string, peso?: string): Promise<PriceComparisonDt
     return result;
   }
 
-//=============================
-
 async getMostRepeatedProducts(
   limit = 10,
   peso?: string,
@@ -317,12 +288,6 @@ async getMostRepeatedProducts(
 
   return sorted;
 }
-
-
-
-//================================
-
-
 
 
   async update(id: number, dados: CriarProdutoDto): Promise<PriceEntryDto> {

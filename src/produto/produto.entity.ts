@@ -29,7 +29,6 @@ export class ProdutoEntity {
   @Column({ name: 'url', type: 'varchar', length: 255, nullable: true })
   url?: string;
 
-  // 🔹 Agora realmente é número no banco
   @Column({ name: 'preco', type: 'decimal', precision: 10, scale: 2 })
   preco!: number;
 
