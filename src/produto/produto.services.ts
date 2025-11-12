@@ -70,32 +70,7 @@ async findByBrand(marca: string): Promise<PriceEntryDto[]> {
     return produtos.map((p) => this.mapToDto(p));
   }
 
-  // async getUniqueProducts(): Promise<
-  //   { nomeLimpo: string; nomeOriginal: string; marca: string }[]
-  // > {
-  //   const produtos = await this.produtoRepository.find({
-  //     select: ['nomeLimpo', 'nomeOriginal', 'marca'],
-  //   });
-
-  //   const unique = new Map<
-  //     string,
-  //     { nomeLimpo: string; nomeOriginal: string; marca: string }
-  //   >();
-
-  //   for (const p of produtos) {
-  //     if (!unique.has(p.nomeLimpo)) {
-  //       unique.set(p.nomeLimpo, {
-  //         nomeLimpo: p.nomeLimpo,
-  //         nomeOriginal: p.nomeOriginal,
-  //         marca: p.marca,
-  //       });
-  //     }
-  //   }
-
-  //   return Array.from(unique.values());
-  // }
-
-async getUniqueProducts(): Promise<
+async getProdutoUnico(): Promise<
   { nomeOrdenado: string; nomeLimpo: string; marca: string; peso: string }[]
 > {
   const produtos = await this.produtoRepository.find({
