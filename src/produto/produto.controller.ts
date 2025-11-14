@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/
 import { ProdutoService } from './produto.services';
 import { CriarProdutoDto } from './dto/criarProduto.dto';
 import { PriceEntryDto, PriceComparisonDto, PriceTrendDto, PriceVariationDto } from './dto/price-entry.dto';
-
+// controller gerais para produtos
 @Controller('produtos')
 export class ProdutoController {
   constructor(private readonly produtoService: ProdutoService) {}
