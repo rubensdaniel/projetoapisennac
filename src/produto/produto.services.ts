@@ -130,52 +130,6 @@ async getPriceComparison(nome: string, peso?: string): Promise<PriceComparisonDt
   }));
 }
 
-//-------------------------------------------------------------
-  // async getPriceTrend(nome: string): Promise<PriceTrendDto> {
-  //   const nomeLimpo = this.limparNome(nome);
-  //   const produtos = await this.produtoRepository.find({
-  //     where: { nomeLimpo },
-  //     order: { coletadoEm: 'ASC' },
-  //   });
-
-  //   if (produtos.length === 0) {
-  //     return {
-  //       nomeLimpo,
-  //       entries: [],
-  //       statistics: {
-  //         minPrice: 0,
-  //         maxPrice: 0,
-  //         avgPrice: 0,
-  //         latestPrice: 0,
-  //         priceChange: 0,
-  //         percentChange: 0,
-  //         totalDataPoints: 0,
-  //       },
-  //     };
-  //   }
-
-  //   const prices = produtos.map((p) => p.preco);
-  //   const minPrice = Math.min(...prices);
-  //   const maxPrice = Math.max(...prices);
-  //   const avgPrice = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
-  //   const latestPrice = prices[prices.length - 1];
-  //   const priceChange = latestPrice - prices[0];
-  //   const percentChange = parseFloat(((priceChange / prices[0]) * 100).toFixed(2));
-
-  //   return {
-  //     nomeLimpo,
-  //     entries: produtos.map((p) => this.mapToDto(p)),
-  //     statistics: {
-  //       minPrice,
-  //       maxPrice,
-  //       avgPrice,
-  //       latestPrice,
-  //       priceChange,
-  //       percentChange,
-  //       totalDataPoints: produtos.length,
-  //     },
-  //   };
-  // }
 
 async getPriceTrend(nomeOrdenado: string, peso: string): Promise<PriceTrendDto> {
   const produtos = await this.produtoRepository.find({

@@ -78,7 +78,7 @@ async getPriceComparison(
 // Obter tendência de preço de um produto
 @Get('variacao-preco/:nome/:peso')
 async getPriceTrend(
-  @Param('nomeOrdenado') nomeOrdenado: string,
+  @Param('nome') nomeOrdenado: string,
   @Param('peso') peso: string,
 ): Promise<PriceTrendDto> {
   return this.produtoService.getPriceTrend(nomeOrdenado, peso);
