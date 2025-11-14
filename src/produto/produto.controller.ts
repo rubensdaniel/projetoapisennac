@@ -20,25 +20,25 @@ export class ProdutoController {
   }
 
   // Buscar produtos pelo nome
-  @Get('by-name/:nome')
+  @Get('marca-produto/:nome')
   async findByProductName(@Param('nome') nome: string): Promise<PriceEntryDto[]> {
     return this.produtoService.findByProductName(nome);
   }
 
 // Buscar produtos pela marca
-@Get('by-brand/:marca')
+@Get('tipo-produto/:marca')
 async findByBrand(@Param('marca') marca: string): Promise<PriceEntryDto[]> {
   return this.produtoService.findByBrand(marca);
 }
 
   // Obter histórico de preços de um produto
-  @Get('price-history/:nome')
+  @Get('historico-preco/:nome')
   async getPriceHistory(@Param('nome') nome: string): Promise<PriceEntryDto[]> {
     return this.produtoService.getPriceHistory(nome);
   }
 
   // Obter produtos de um mercado específico
-  @Get('by-market/:mercado')
+  @Get('mercado/:mercado')
   async findByMarket(@Param('mercado') mercado: string): Promise<PriceEntryDto[]> {
     return this.produtoService.findByMarket(mercado);
   }
@@ -49,13 +49,6 @@ async findByBrand(@Param('marca') marca: string): Promise<PriceEntryDto[]> {
     return this.produtoService.getProdutoUnico();
   }
 
-  // // Comparar preços de um produto em diferentes mercados
-  // @Get('price-comparison/:nome')
-  // async getPriceComparison(@Param('nome') nome: string): Promise<PriceComparisonDto[]> {
-  //   return this.produtoService.getPriceComparison(nome);
-  // }
-
-//==============================================================
 
 // Endpoint para produtos mais repetidos, com filtro por peso e marca
 @Get('mais-repetidos')
@@ -71,25 +64,26 @@ async getMostRepeatedProducts(
 
 
 
-//==============================================================
-
-
 // Comparar preços de um produto em diferentes mercados
-@Get('price-comparison/:nome')
+@Get('comparacao-preco/:nome')
 async getPriceComparison(
   @Param('nome') nome: string,
   @Query('peso') peso?: string, // <-- adiciona peso como query param opcional
 ): Promise<PriceComparisonDto[]> {
   return this.produtoService.getPriceComparison(nome, peso);
 }
-//===========================================================
 
 
-  // Obter tendência de preço de um produto
-  @Get('price-trend/:nome')
-  async getPriceTrend(@Param('nome') nome: string): Promise<PriceTrendDto> {
-    return this.produtoService.getPriceTrend(nome);
-  }
+
+// Obter tendência de preço de um produto
+@Get('variacao-preco/:nome/:peso')
+async getPriceTrend(
+  @Param('nomeOrdenado') nomeOrdenado: string,
+  @Param('peso') peso: string,
+): Promise<PriceTrendDto> {
+  return this.produtoService.getPriceTrend(nomeOrdenado, peso);
+}
+
 
   // Obter produtos com maior variação de preço
 @Get('/produtos/highest-variation/:limit')

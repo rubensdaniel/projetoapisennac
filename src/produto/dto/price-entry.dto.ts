@@ -21,7 +21,8 @@ export class PriceComparisonDto {
 }
 
 export class PriceTrendDto {
-  nomeLimpo!: string;
+  nomeOrdenado!: string;
+  peso: string;
   entries!: PriceEntryDto[];
   statistics!: {
     minPrice: number;
