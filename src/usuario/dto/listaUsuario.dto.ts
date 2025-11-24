@@ -1,11 +1,3 @@
-// export class ListaUsuarioDTO{
-//     constructor(
-//             readonly id: string, 
-//             readonly nome:string,
-//             readonly email: string
-//     ){}
-// }
-
 import { ApiProperty } from "@nestjs/swagger";
 
 export class ListaUsuarioDTO {
