@@ -35,11 +35,14 @@ export class PriceTrendDto {
   };
 }
 
+
 export class PriceVariationDto {
-  nomeLimpo!: string;
-  minPrice!: number;
-  maxPrice!: number;
-  variation!: number;
-  percentVariation!: number;
-  dataPoints!: number;
+  nomeOrdenado: string;
+  peso: string;
+  minPrice: number;
+  maxPrice: number;
+  variation: number;
+  percentVariation: number;
+  dataPoints: number;
 }
+

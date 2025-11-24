@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common';
+
 import { ProdutoService } from './produto.services';
 import { CriarProdutoDto } from './dto/criarProduto.dto';
 import { PriceEntryDto, PriceComparisonDto, PriceTrendDto, PriceVariationDto } from './dto/price-entry.dto';
@@ -86,11 +87,22 @@ async getPriceTrend(
 
 
   // Obter produtos com maior variação de preço
-@Get('/produtos/highest-variation/:limit')
-async getHighestVariation(@Param('limit') limit?: string) {
-  const l = limit ? parseInt(limit) : 10; // valor padrão
-  return this.produtoService.getProductsWithHighestVariation(l);
+// @Get('/produtos/highest-variation/:limit')
+// async getHighestVariation(@Param('limit') limit?: string) {
+//   const l = limit ? parseInt(limit) : 10; // valor padrão
+//   return this.produtoService.getProductsWithHighestVariation(l);
+// }
+
+
+// Obter variação de preço de um produto filtrado por nome e peso
+@Get('/produtos/highest-variation/:nome/:peso')
+async getHighestVariationByProduct(
+  @Param('nome') nomeOrdenado: string,
+  @Param('peso') peso: string,
+) {
+  return this.produtoService.getProductHighestVariation(nomeOrdenado, peso);
 }
+
 
 
   // Atualizar produto (exemplo genérico)

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ProdutoEntityRepository } from './produto.repository';
 import { ProdutoEntity } from './produto.entity';
 import { CriarProdutoDto } from './dto/criarProduto.dto';
+import { NotFoundException } from '@nestjs/common';
 import {
   PriceEntryDto,
   PriceComparisonDto,
@@ -183,39 +184,79 @@ async getPriceTrend(nomeOrdenado: string, peso: string): Promise<PriceTrendDto> 
 
 //-------------------------------------------------------------
 
-  async getProductsWithHighestVariation(
-    limit = 10,
-  ): Promise<PriceVariationDto[]> {
-    const produtos = await this.produtoRepository.find();
-    const variations = new Map<string, number[]>();
+  // async getProductsWithHighestVariation(
+  //   limit = 10,
+  // ): Promise<PriceVariationDto[]> {
+  //   const produtos = await this.produtoRepository.find();
+  //   const variations = new Map<string, number[]>();
 
-    for (const p of produtos) {
-      if (!variations.has(p.nomeLimpo)) variations.set(p.nomeLimpo, []);
-      variations.get(p.nomeLimpo)!.push(p.preco);
-    }
+  //   for (const p of produtos) {
+  //     if (!variations.has(p.nomeLimpo)) variations.set(p.nomeLimpo, []);
+  //     variations.get(p.nomeLimpo)!.push(p.preco);
+  //   }
 
-    const result = Array.from(variations.entries())
-      .map(([nomeLimpo, prices]) => {
-        const minPrice = Math.min(...prices);
-        const maxPrice = Math.max(...prices);
-        const variation = maxPrice - minPrice;
-        const percentVariation = parseFloat(
-          ((variation / minPrice) * 100).toFixed(2),
-        );
-        return {
-          nomeLimpo,
-          minPrice,
-          maxPrice,
-          variation,
-          percentVariation,
-          dataPoints: prices.length,
-        };
-      })
-      .sort((a, b) => b.variation - a.variation)
-      .slice(0, limit);
+  //   const result = Array.from(variations.entries())
+  //     .map(([nomeLimpo, prices]) => {
+  //       const minPrice = Math.min(...prices);
+  //       const maxPrice = Math.max(...prices);
+  //       const variation = maxPrice - minPrice;
+  //       const percentVariation = parseFloat(
+  //         ((variation / minPrice) * 100).toFixed(2),
+  //       );
+  //       return {
+  //         nomeLimpo,
+  //         minPrice,
+  //         maxPrice,
+  //         variation,
+  //         percentVariation,
+  //         dataPoints: prices.length,
+  //       };
+  //     })
+  //     .sort((a, b) => b.variation - a.variation)
+  //     .slice(0, limit);
 
-    return result;
+  //   return result;
+  // }
+
+
+async getProductHighestVariation(
+  nomeOrdenado: string,
+  peso: string,
+): Promise<PriceVariationDto> {
+  const produtos = await this.produtoRepository.find({
+    where: { nomeOrdenado, peso },
+  });
+
+  if (produtos.length === 0) {
+    throw new NotFoundException(
+      `Nenhum produto encontrado para ${nomeOrdenado} (${peso})`,
+    );
   }
+
+  const prices = produtos.map((p) => p.preco);
+
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+  const variation = maxPrice - minPrice;
+
+  const percentVariation = parseFloat(
+    ((variation / minPrice) * 100).toFixed(2),
+  );
+
+  return {
+    nomeOrdenado,
+    peso,
+    minPrice,
+    maxPrice,
+    variation,
+    percentVariation,
+    dataPoints: prices.length,
+  };
+}
+
+
+//-------------------------------------------------------------
+
 
 async getMostRepeatedProducts(
   limit = 10,
