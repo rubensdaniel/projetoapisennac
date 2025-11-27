@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
-import * as bcrypt from "bcrypt";
+// import * as bcrypt from "bcrypt"; // ❌ entidade não deve ter regras de hash
 
-@Entity()
+@Entity('usuario') // adicionando nome da tabela
 export class USUARIO {
   @PrimaryColumn()
   ID: string;
@@ -18,29 +18,45 @@ export class USUARIO {
   @Column({ length: 255 })
   SENHA: string;
 
-  constructor(
-    id?: string,
-    nome?: string,
-    email?: string,
-    telefone?: string,
-    senha?: string
-  ) {
-    if (id && nome && email && telefone && senha) {
-      const saltOrRounds = 10;
-      this.ID = id;
-      this.NOME = nome;
-      this.EMAIL = email;
-      this.TELEFONE = telefone;
-      this.SENHA = bcrypt.hashSync(senha, saltOrRounds);
-    }
-  }
+  // 🔥 Novo campo necessário para o login e sistema admin/usuário
+  @Column({ length: 20, default: 'usuario' })
+  TIPO: string;
 
-  trocarSenha(novaSenha: string) {
-    const saltOrRounds = 10;
-    this.SENHA = bcrypt.hashSync(novaSenha, saltOrRounds);
-  }
+  // -------------------------------------------------------------
+  // ❌ CONSTRUTOR ANTIGO (faz hash dentro da entidade) — REMOVIDO
+  // -------------------------------------------------------------
+  //
+  // constructor(
+  //   id?: string,
+  //   nome?: string,
+  //   email?: string,
+  //   telefone?: string,
+  //   senha?: string
+  // ) {
+  //   if (id && nome && email && telefone && senha) {
+  //     const saltOrRounds = 10;
+  //     this.ID = id;
+  //     this.NOME = nome;
+  //     this.EMAIL = email;
+  //     this.TELEFONE = telefone;
+  //     this.SENHA = bcrypt.hashSync(senha, saltOrRounds);
+  //   }
+  // }
 
-  login(senha: string): boolean {
-    return bcrypt.compareSync(senha, this.SENHA);
-  }
+  // -------------------------------------------------------------
+  // ❌ MÉTODO trocarSenha — deve ficar no SERVICE, não na entidade
+  // -------------------------------------------------------------
+  //
+  // trocarSenha(novaSenha: string) {
+  //   const saltOrRounds = 10;
+  //   this.SENHA = bcrypt.hashSync(novaSenha, saltOrRounds);
+  // }
+
+  // -------------------------------------------------------------
+  // ❌ MÉTODO login — regra de negócio não fica em entidade
+  // -------------------------------------------------------------
+  //
+  // login(senha: string): boolean {
+  //   return bcrypt.compareSync(senha, this.SENHA);
+  // }
 }

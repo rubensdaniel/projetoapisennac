@@ -1,7 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsEmail, MinLength, IsNotEmpty } from "class-validator";
+import { IsString, IsEmail, MinLength, IsNotEmpty, IsOptional } from "class-validator";
 import { EmailUnico } from "../validacao/email-unico.validator";
 import { SenhaForte } from "../validacao/senhaForte.validator";
+
+// -------------------------------------------------------------
+// ❗️ DTO ORIGINAL — preservado e apenas comentado quando alterado
+// -------------------------------------------------------------
 
 export class CriaUsuarioDTO {
   @ApiProperty({
@@ -39,4 +43,16 @@ export class CriaUsuarioDTO {
   @MinLength(6, { message: "A senha deve ter no mínimo 6 caracteres" })
   @SenhaForte({ message: "A senha deve ser mais forte" })
   senha: string;
+
+  // -------------------------------------------------------------
+  // ✅ NOVO CAMPO: tipo (necessário para admin/user)
+  // -------------------------------------------------------------
+  @ApiProperty({
+    example: 'usuario',
+    description: 'Tipo do usuário (usuario ou admin)',
+    required: false,
+  })
+  @IsString()
+  @IsOptional() // ← se não enviar, será 'usuario'
+  tipo?: string;
 }
